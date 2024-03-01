@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
+import { v4 as uuidv4 } from "uuid";
 
 function CadEnderecos() {
-    const [alterar, setAlterar] = useState(null);
+    const [alterar, setAlterar] = useState(false);
     const [endereco, setEndereco] = useState({
-        id: 1,
+        id: uuidv4(),
         logradouro: "",
         numero: "",
         complemento: "",
@@ -12,8 +13,8 @@ function CadEnderecos() {
         uf: "",
         cep: "",
     });
-    const [blablabla, setBlablabla] = useState([]);
-    /*
+    const [enderecos, setEnderecos] = useState([]);
+
     useEffect(() => {
         const enderecosStorage = localStorage.getItem("enderecos");
 
@@ -25,31 +26,14 @@ function CadEnderecos() {
             }
         }
     }, []);
-*/
 
-    /*    
     useEffect(() => {
         if (enderecos.length > 0) {
             localStorage.setItem("enderecos", JSON.stringify(enderecos));
         } else {
             localStorage.setItem("enderecos", "");
         }
-
-        console.log(enderecos);
-        console.log("effect: enderecos");
     }, [enderecos]);
-*/
-    function getUltimoID() {
-        const enderecosQtd = blablabla.length;
-        var result = 1;
-
-        if (enderecosQtd > 0) {
-            const enderecoUltimo = blablabla[enderecosQtd - 1];
-            result = enderecoUltimo.id;
-        }
-
-        return result;
-    }
 
     const changeLogradouro = (e) => {
         setEndereco({ ...endereco, logradouro: e.target.value });
@@ -80,10 +64,7 @@ function CadEnderecos() {
     };
 
     const clickAdicionar = () => {
-        setBlablabla(blablabla.concat(endereco));
-        const proximoID = 2; //getUltimoID() + 1;
-        console.log("vai fazer setEndereco");
-        console.log(endereco);
+        setEnderecos([...enderecos, endereco]);
         setEndereco({
             id: 1,
             logradouro: "",
@@ -94,19 +75,15 @@ function CadEnderecos() {
             uf: "",
             cep: "",
         });
-        console.log("clickAdicionar");
-        console.log(blablabla);
     };
 
     const clickAtualizar = (enderecoItem) => {
-        /*        
         console.log("clickAtualizar");
         console.log(enderecos);
         setEnderecos(enderecos.map((enderecoItem) => (enderecoItem.id === endereco.id ? endereco : enderecoItem)));
-        setAlterar(null);
-        const proximoID = getUltimoID() + 1;
+        setAlterar(false);
         setEndereco({
-            id: proximoID,
+            id: uuidv4(),
             logradouro: "",
             numero: "",
             complemento: "",
@@ -115,16 +92,17 @@ function CadEnderecos() {
             uf: "",
             cep: "",
         });
-*/
     };
 
     const clickEditar = (enderecoItem) => {
-        setAlterar(enderecoItem);
+        setAlterar(true);
         setEndereco(enderecoItem);
+
+        console.log("clickEditar");
     };
 
     const clickExcluir = (enderecoItem) => {
-        setBlablabla(blablabla.filter((item) => item.id !== enderecoItem.id));
+        setEnderecos(enderecos.filter((item) => item.id !== enderecoItem.id));
     };
 
     return (
@@ -165,9 +143,19 @@ function CadEnderecos() {
                 </div>
                 <div>
                     {alterar ? (
-                        <button onClick={clickAtualizar(endereco)}>Atualizar</button>
+                        <button
+                            onClick={() => {
+                                clickAtualizar(endereco);
+                            }}>
+                            Atualizar
+                        </button>
                     ) : (
-                        <button onClick={clickAdicionar}>Adicionar</button>
+                        <button
+                            onClick={() => {
+                                clickAdicionar();
+                            }}>
+                            Adicionar
+                        </button>
                     )}
                 </div>
             </section>
@@ -204,34 +192,44 @@ function CadEnderecos() {
                                 <b></b>
                             </td>
                         </tr>
-                        {blablabla.map((item) => (
+                        {enderecos.map((item) => (
                             <tr key={item.id}>
                                 <td>
-                                    <b>{item.logradouro}</b>
+                                    <i>{item.logradouro}</i>
                                 </td>
                                 <td>
-                                    <b>{item.numero}</b>
+                                    <i>{item.numero}</i>
                                 </td>
                                 <td>
-                                    <b>{item.complemento}</b>
+                                    <i>{item.complemento}</i>
                                 </td>
                                 <td>
-                                    <b>{item.bairro}</b>
+                                    <i>{item.bairro}</i>
                                 </td>
                                 <td>
-                                    <b>{item.cidade}</b>
+                                    <i>{item.cidade}</i>
                                 </td>
                                 <td>
-                                    <b>{item.uf}</b>
+                                    <i>{item.uf}</i>
                                 </td>
                                 <td>
-                                    <b>{item.cep}</b>
+                                    <i>{item.cep}</i>
                                 </td>
                                 <td>
-                                    <button onClick={clickEditar(item)}>Editar</button>
+                                    <button
+                                        onClick={() => {
+                                            clickEditar(item);
+                                        }}>
+                                        Editar
+                                    </button>
                                 </td>
                                 <td>
-                                    <button onClick={clickExcluir(item)}>Excluir</button>
+                                    <button
+                                        onClick={() => {
+                                            clickExcluir(item);
+                                        }}>
+                                        Excluir
+                                    </button>
                                 </td>
                             </tr>
                         ))}
